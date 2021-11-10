@@ -1,0 +1,79 @@
+package bulbasaur;
+
+import java.io.*;
+import java.util.Scanner;
+
+public class DFA {
+
+	//class for running through Transition functions
+	public static char tranFunctions(String tran[],char state,char lang) {
+		//loop for all the transition
+		for(int i = 0; i < tran.length; i++) {
+			//if state and alphabet equal certain transition then move value to the value stated
+			//runs through transition functions 
+			//charAt[1]=state
+			//charAt[3]=alphabet
+			//charAt[7]=new state
+			if(tran[i].charAt(1) == state && tran[i].charAt(3) == lang) {
+				return tran[i].charAt(7);
+			}
+		}
+		return state;	
+	}
+	/*Main method*/
+	public static void main(String[] args) throws IOException {
+		//Scanner for reading user input
+		Scanner Scan = new Scanner(System.in);
+		//variables to store values
+		String startState;
+		String acceptState;
+		String state;
+		String lang;
+		String transition = null;
+		//if the user has not entered a file yet
+		if(args.length == 0) {
+			//ask user for file
+			System.out.println("Please enter a file path to test DFA:");
+		}else {
+			//try catch for if file not found
+			try {
+				//reads file from command line using filereader and bufferedReader
+				FileReader fr = new FileReader(args[0]);/*reads from command line*/
+				BufferedReader br = new BufferedReader(fr);
+				
+				//store values into arrays for values alphabet,states,language
+				 lang = br.readLine();
+				 state = br.readLine();
+				 startState = br.readLine();
+				 acceptState = br.readLine();
+				/*while file still has lines store rest into tran sepereating each by #*/
+				 while(br.readLine() != null) {
+					 transition= transition + br.readLine()+"#";
+				 }
+				 //Store transition functions into an array
+				 String tran[] = transition.split("#");
+				
+				 //Display lang state startState acceptState
+				 System.out.println("Language: " + lang);
+				 System.out.println("States: " + state);
+				 System.out.println("Start State: " + startState);
+				 System.out.println("Accept State: "+ acceptState);
+				 System.out.println("Transition Rules:");
+				 //loop for printing rules
+				 for(int i = 0; i < tran.length; i++) {
+					 System.out.println(tran[i]);
+				 }
+				
+				 //ask for a string for testing
+				
+				 
+				
+			}
+			//if file not found print file not found and exit program
+			catch(FileNotFoundException e) {
+				System.out.println("An error occured:File Not Found");
+				System.exit(0);
+			}
+		}
+	}
+}
