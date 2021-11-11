@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class DFA {
 
 	//class for running through Transition functions
-	public static char tranFunctions(String tran[],char state,char lang) {
+	public static char tranFunctions(String tran[],char state,char point) {
 		//loop for all the transition
 		for(int i = 0; i < tran.length; i++) {
 			//if state and alphabet equal certain transition then move value to the value stated
@@ -14,7 +14,7 @@ public class DFA {
 			//charAt[1]=state
 			//charAt[3]=alphabet
 			//charAt[7]=new state
-			if(tran[i].charAt(1) == state && tran[i].charAt(3) == lang) {
+			if(tran[i].charAt(1) == state && tran[i].charAt(3) == point) {
 				return tran[i].charAt(7);
 			}
 		}
@@ -23,7 +23,7 @@ public class DFA {
 	/*Main method*/
 	public static void main(String[] args) throws IOException {
 		//Scanner for reading user input
-		Scanner Scan = new Scanner(System.in);
+		Scanner scan = new Scanner(System.in);
 		//variables to store values
 		String startState;
 		String acceptState;
@@ -64,10 +64,31 @@ public class DFA {
 					 System.out.println(tran[i]);
 				 }
 				
-				 //ask for a string for testing
+				 //ask for a string for testing and store in string
+				System.out.println("Enter a String to be tested:");
+				String tested = scan.nextLine();
 				
-				 
+				//set the current state of the string to the first value in the string
+				char currentState = startState.charAt(0);
 				
+				//remove the brackets and commas from the accept state with space
+				acceptState = acceptState.replace("{", "");
+				acceptState = acceptState.replace("}", "");
+				acceptState = acceptState.replace(",", "");
+				
+				//test the string the user input
+				for(int i = 0; i < tested.length(); i++) {
+					char point = tested.charAt(i);//read char at point i
+					//call transition function method to change state
+					currentState = tranFunctions(tran,currentState,point);
+				}
+				//if string results in accept state
+				if(acceptState.contains(state+"")){
+					System.out.println("String accepted");
+				}else {
+					System.out.println("String not accepted");
+					br.close();
+				}
 			}
 			//if file not found print file not found and exit program
 			catch(FileNotFoundException e) {
