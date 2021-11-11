@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class DFA {
 
 	//class for running through Transition functions
-	public static char tranFunctions(String tran[],char state,char point) {
+	public static char tranFunctions(String tran[],char currentState,char point) {
 		//loop for all the transition
 		for(int i = 0; i < tran.length; i++) {
 			//if state and alphabet equal certain transition then move value to the value stated
