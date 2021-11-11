@@ -14,7 +14,7 @@ public class DFA {
 			//charAt[1]=state
 			//charAt[3]=alphabet
 			//charAt[7]=new state
-			if(tran[i].charAt(1) == state && tran[i].charAt(3) == point) {
+			if(tran[i].charAt(1) == currentState && tran[i].charAt(3) == point) {
 				return tran[i].charAt(7);
 			}
 		}
