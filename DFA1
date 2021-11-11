@@ -83,7 +83,7 @@ public class DFA {
 					currentState = tranFunctions(tran,currentState,point);
 				}
 				//if string results in accept state
-				if(acceptState.contains(state+"")){
+				if(acceptState.contains(currentState+"")){
 					System.out.println("String accepted");
 				}else {
 					System.out.println("String not accepted");
