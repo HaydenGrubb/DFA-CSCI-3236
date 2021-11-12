@@ -5,6 +5,24 @@ import java.io.*;
 
 public class dfa {
     
+
+    //tester method for checking user string
+    public  static char tester(state tranState[], char temp, char userState){
+       //loop for all the transition
+		for(int i = 0; i < tranState.length; i++) {
+			//if state and alphabet equal certain transition then move value to the value stated
+			//runs through transition functions 
+			//charAt[1]=state
+			//charAt[3]=alphabet
+			//charAt[7]=new state
+			if(tranState[i].getCurrentState() == temp && tranState[i].getAlphabet() == userState) {
+				return tranState[i].tranState;
+			}
+		}
+		return temp;	
+    }
+
+    //main method
     public static void main(String [] args) throws FileNotFoundException, IOException{
        
         //create scanner and file varaible
@@ -14,7 +32,7 @@ public class dfa {
         //line counter to count number of lines to help store values into proper locations
         //strlength keeps track of each lines length
         int lineCount = 1;
-        int strlength;
+        
 
         //variables for each value: alphabet, states, startState, accept States, transition States
         char alphabet[] = new char[100];
@@ -22,7 +40,7 @@ public class dfa {
         String startState;
         char acceptState[] = new char[100];
         state tranState[] = new state[200];
-        String tran = " ";
+        String tran = "";
        
       
         try{
@@ -80,10 +98,19 @@ public class dfa {
             }
             //transition functions
             for(int i = 0; i< tranS.length; i++){
+               
                 state temp = new state(tranS[i].charAt(1),tranS[i].charAt(3),tranS[i].charAt(7));
+               //set all values of temp
+                temp.setCurrentState(tranS[i].charAt(1));
+                temp.setAlphabet(tranS[i].charAt(3));
+                temp.setTranState(tranS[i].charAt(7));
+
                 tranState[i] = temp;
             }
-
+            //close buffered reader, file reader, and scanner
+            fr.close();
+            br.close();
+            fileReader.close();
         }
         //if the file is not found :(
         catch(FileNotFoundException e){
@@ -94,14 +121,31 @@ public class dfa {
         
         //ask user for string to test
         System.out.println("Please enter a string to test DFA");
-       // String user = scan.nextLine();
+        String user = scan.nextLine();
+        char userState = user.charAt(0);
+
+        //test user to see if it pass test
+        for(int i = 0;i < user.length(); i++){
+            char temp = user.charAt(i);
+            userState= tester(tranState,temp,userState);
+
+        }
+
+        //print results
+        for(int i = 0; i <=acceptState.length; i++){
+            if(acceptState[i] == userState){
+                System.out.println("Success for state:" + acceptState[i]);
+            }else{
+                System.out.println("failed for state:" + acceptState[i]);
+            }
+        }
 
 
-        
+        //close scan
+        scan.close();
     }
     
 }
-
 public class state {
    
    char currentState;
@@ -115,6 +159,27 @@ public class state {
         this.alphabet = alphabet;
         this.tranState = tranState;
       
+    }
+    //getter 
+    public char getCurrentState(){
+        return currentState;
+    }
+    public char getAlphabet(){
+        return alphabet;
+    }
+    public char tranState(){
+        return tranState;
+    }
+
+    //setters
+    public void setCurrentState(char currentState){
+        this.currentState = currentState;
+    }
+    public void setAlphabet(char alphabet){
+        this.alphabet = alphabet;
+    }
+    public void setTranState(char tranState){
+        this.tranState = tranState;
     }
 
 }
