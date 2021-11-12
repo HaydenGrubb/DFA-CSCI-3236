@@ -1,0 +1,120 @@
+
+import java.util.Scanner;
+
+import java.io.*;
+
+public class dfa {
+    
+    public static void main(String [] args) throws FileNotFoundException, IOException{
+       
+        //create scanner and file varaible
+        Scanner scan = new Scanner(System.in);
+        File inputFile;
+       
+        //line counter to count number of lines to help store values into proper locations
+        //strlength keeps track of each lines length
+        int lineCount = 1;
+        int strlength;
+
+        //variables for each value: alphabet, states, startState, accept States, transition States
+        char alphabet[] = new char[100];
+        char states[] = new char[100];
+        String startState;
+        char acceptState[] = new char[100];
+        state tranState[] = new state[200];
+        String tran = " ";
+       
+      
+        try{
+            //check if there is a file already in the command lien
+            //if no file ask for file    
+            if(args.length == 0){
+        
+                System.out.println("Please enter DFA file: ");
+                String filePath = scan.nextLine();
+                inputFile = new File(filePath);
+            }else{
+        
+                //set arg[0] as file and make input file the filepath
+                String filePath = args[0];
+                inputFile = new File(filePath);
+            }
+            
+            //create file Reader and Buffered Reader and Scanne to print data from file
+            Scanner fileReader = new Scanner(inputFile);
+            FileReader fr = new FileReader(inputFile);
+            BufferedReader br = new BufferedReader(fr);
+
+            //print data from file
+            while(fileReader.hasNextLine()){
+                String data = fileReader.nextLine();
+                System.out.println(data);
+            }
+           
+
+            //get alphabet, states, start state, accept state and transition functions from file
+            String alpha = br.readLine();
+            String st = br.readLine();
+            startState = br.readLine();
+            String aSt = br.readLine();
+
+            //get tran functions
+            while(br.readLine() != null){
+                 tran = tran + br.readLine() + "#";
+            }
+            //store in tranS array
+            String tranS[] = tran.split("#");
+
+            //store into arrays
+            //alphabet
+            for(int i = 0; i < alpha.length(); i++){
+                alphabet[i] = alpha.charAt(i);
+            }
+            //state
+            for(int i = 0; i < st.length(); i++){
+                states[i] = st.charAt(i);
+            }
+            //accept States
+            for(int i = 0; i < aSt.length(); i++){
+                acceptState[i] = aSt.charAt(i);
+            }
+            //transition functions
+            for(int i = 0; i< tranS.length; i++){
+                state temp = new state(tranS[i].charAt(1),tranS[i].charAt(3),tranS[i].charAt(7));
+                tranState[i] = temp;
+            }
+
+        }
+        //if the file is not found :(
+        catch(FileNotFoundException e){
+            System.out.println("File not found");
+            System.exit(0);
+        }
+     
+        
+        //ask user for string to test
+        System.out.println("Please enter a string to test DFA");
+       // String user = scan.nextLine();
+
+
+        
+    }
+    
+}
+
+public class state {
+   
+   char currentState;
+   char alphabet;
+   char tranState;
+   
+    //constructor for tranState
+   
+   public state(char currentState, char alphabet, char tranState){
+        this.currentState = currentState;
+        this.alphabet = alphabet;
+        this.tranState = tranState;
+      
+    }
+
+}
