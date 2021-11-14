@@ -1,0 +1,313 @@
+
+import java.util.Scanner;
+import java.io.FileNotFoundException;
+import java.io.*;
+
+public class dfa {
+    
+
+  	
+    
+
+    //main method
+    public static void main(String [] args) throws FileNotFoundException, IOException{
+        
+        //Scanner for reading user input
+        Scanner scan  = new Scanner(System.in);
+        
+        //create file variable
+        File inputFile;
+
+        //keep track of file line count
+        int lineNum = 1;
+
+        //keep track of string length
+        int strLength;
+
+        //initialize the variables to store data
+        char alphabet[] = new char[10];
+        char states[] = new char[10];
+        char startState = ' ';
+        char acceptStates[] = new char[10];
+        int acceptStateCount = 0;
+        state transitonFunction[] = new state[8];
+        int transitionCount = 0;
+
+        //try catch file not found
+        try{
+                //if there is no file in the command line ask for a file
+            if(args.length == 0){
+                System.out.println("Please enter a file to test DFA:");
+                String filePath = scan.nextLine();
+                inputFile = new File(filePath);
+            }
+            //if file is present in args
+             else{
+                inputFile = new File(args[0]);
+             }
+            
+             //Scanner to read file
+             Scanner fileReader = new Scanner(inputFile);
+             //read file
+             while(fileReader.hasNextLine()){
+                String data = fileReader.nextLine();
+                 strLength = data.length();
+
+                //get the alphabet from line line
+                if(lineNum == 1){
+                    //remove special characters from line 1
+                    String line = data;
+                    //gets rid of the , so array only has alphabet characters
+                    line = line.replaceAll(",", "");
+                    //store alphabet into alphabet array
+                    //for storing values in array
+                    int AlphabetCounter = 0;
+                    //start at 1 to avoid { and end -1 to avoid last }
+                    for(int i = 1; i < line.length()-1; i++){
+                       alphabet[AlphabetCounter] = line.charAt(i);
+                       AlphabetCounter++;
+                    }
+
+                }
+
+                //get the states
+                if(lineNum == 2){
+                    int StateCount = 0;
+                    //remove special; characters from line 2
+                    String line =data;
+                    //get rid of all ,
+                    for(int i = 1; i < strLength; i +=2){
+                        states[StateCount] = data.charAt(i);
+                        StateCount++;
+                        
+                    }
+                }
+
+                //get the start state
+                if(lineNum == 3){
+                    startState = data.charAt(0);
+                }
+
+                //get the acceptstates
+                if(lineNum == 4){
+                    String line = data;
+                    for(int i =1; i < strLength; i+=2){
+                        acceptStates[acceptStateCount] = data.charAt(i);
+                        acceptStateCount++;
+                    }
+                }
+
+                //get the transition functions
+                if(lineNum > 4){
+                    state temp = new state(data.charAt(1), data.charAt(3), data.charAt(7));
+                    transitonFunction[transitionCount] = temp;
+                    transitionCount++;
+                }
+
+                //add to line numm
+                lineNum++;
+             }
+             
+            /*
+             //tester
+            for(int i = 0; i < transitonFunction.length; i++){
+                System.out.println(transitonFunction[i].initialState);
+            }
+            */
+            //close the file reader scanner
+            fileReader.close();
+
+        }catch(FileNotFoundException e){
+            System.out.println("File not found");
+            System.exit(0);
+        }
+
+        //print all the date for the user
+        
+        //space to keep it tidy
+        System.out.println("");
+
+        //Alphabet
+        System.out.println("Alphabet: ");
+        for(int i = 0; i < alphabet.length; i++){
+            System.out.print(alphabet[i] + " ");
+        }
+        //go to next line
+        System.out.println("");
+
+        //States
+        System.out.println("States:");
+            for(int i = 0; i < states.length; i++){
+                System.out.print(states[i] + " ");
+            }
+        //go to next line
+        System.out.println("");
+        
+        //print the start State
+        System.out.println("Start State:");
+        System.out.println(startState);
+
+        //print the end states
+        System.out.println("Accept States:");
+        for(int i = 0; i < acceptStates.length; i++){
+            System.out.print(acceptStates[i] + " ");
+        }
+        //print space
+        System.out.println("");
+
+        //print the transition functions
+        System.out.println("Transition Functions:");
+        for(int i = 0; i < transitonFunction.length; i++){
+            System.out.println("Tran function " + i +": (" + transitonFunction[i].getInitialState() + "," + transitonFunction[i].getInputChar() + ")->"+
+                 transitonFunction[i].transitionState);
+        }
+        //print space
+        System.out.println("");
+        
+        //test the user String
+        String userString;
+
+        //ask user to test String
+        System.out.println("Please enter string to test DFA");
+        userString = scan.nextLine();
+
+        //store userString into char array to test each individual character
+        char userStringArray[] = new char[userString.length()];
+        for(int i = 0; i < userString.length(); i++){
+            userStringArray[i] = userString.charAt(i);
+        }
+
+        //boolean value to check if string is valid
+        boolean validChar = true;
+        //create new char called currstate and set value to start State
+        char currState = startState;
+        //test first char of string
+        validChar = state.validChar(alphabet, userStringArray[0]);
+        validChar = state.validTransition(transitonFunction, transitionCount, currState, userStringArray[0]);
+        currState = state.nextState(transitonFunction, transitionCount, currState, userStringArray[0]);
+
+
+        //test user String
+        for(int  i = 1; i< userString.length(); i++){
+            if(validChar ){
+
+                //check if current char is in alphabet
+                validChar = state.validChar(alphabet, userStringArray[i]);
+                //check if there is a valid transition
+                validChar = state.validTransition(transitonFunction, transitionCount, currState, userStringArray[i]);
+
+                //if still valid changed current state
+                if (validChar){
+                    currState = state.nextState(transitonFunction, transitionCount, currState, userStringArray[i]);
+                }
+                //if any part of the string is not valid char break
+                else{
+                    break;
+                }
+
+            }
+        }
+        //check if final state is the same as the accept state
+        for(int i = 0; i < acceptStateCount; i++){
+            if(currState == acceptStates[i]){
+                validChar = true;
+                break;
+            }
+            else{
+                validChar = false;
+            }
+        }
+
+        //print result
+        if(validChar){
+            System.out.println("test string is valid");
+        }else{
+            System.out.println("test string is not valid");
+        }
+    
+        //close scanner
+        scan.close();
+    
+    }
+ 
+}
+public class state {
+     //Holds the initial state of the transition function
+     char initialState;
+     //Holds the character that causes the transition
+     char inputChar;
+     //Holds the state being moved to
+     char transitionState;
+ 
+ 
+ 
+//Default Constructor
+ public state() {
+    initialState = 0;
+    inputChar = 0;
+    transitionState = 0;
+}
+
+public state(char setInitialState, char setInputChar, char setTransition) {
+    initialState = setInitialState;
+    inputChar = setInputChar;
+    transitionState = setTransition;
+}
+
+public char getInitialState() {
+    return initialState;
+}
+
+public char getInputChar() {
+    return inputChar;
+}
+
+public char getTransitionState() {
+    return transitionState;
+}
+
+
+
+    public static boolean validChar(char[] inputAlphabet, char currChar) {
+        //Goes through the entire alphabet. If there's a match at any point, returns true
+        for(int i = 0; i < inputAlphabet.length; i++) {
+            if(currChar == inputAlphabet[i]) {
+                return true;
+            }
+        }
+
+        //Otherwise, defaults to false
+        return false;
+    }
+
+    //Checks to make sure the transition is valid
+    public static boolean validTransition(state[] transitionArray, int numTransitions, char currState, char inputChar) {
+        for(int i = 0; i < numTransitions; i++) {
+            if(transitionArray[i].getInitialState() == currState) {
+                if(inputChar == transitionArray[i].getInputChar()) {
+                    return true;
+                }
+            }
+        }
+        
+      
+        return false;
+    }
+
+    public static char nextState(state[] transitionArray, int numTransitions, char currState, char inputChar) {
+        char nextState = ' ';
+        for(int i = 0; i < numTransitions; i++) {
+            if(transitionArray[i].getInitialState() == currState) {
+                if(inputChar == transitionArray[i].getInputChar()) {
+                    nextState = transitionArray[i].getTransitionState();
+                }
+            }
+        }
+
+        return nextState;
+    }
+
+
+}
+
+
