@@ -25,13 +25,14 @@ public class dfa {
         int strLength;
 
         //initialize the variables to store data
+        int transitionCount = 0;
         char alphabet[] = new char[10];
         char states[] = new char[10];
         char startState = ' ';
         char acceptStates[] = new char[10];
         int acceptStateCount = 0;
-        state transitonFunction[] = new state[8];
-        int transitionCount = 0;
+        state transitonFunction[] = new state[20];
+        
 
         //try catch file not found
         try{
@@ -102,8 +103,10 @@ public class dfa {
                     state temp = new state(data.charAt(1), data.charAt(3), data.charAt(7));
                     transitonFunction[transitionCount] = temp;
                     transitionCount++;
+                    
                 }
-
+               
+                
                 //add to line numm
                 lineNum++;
              }
@@ -121,7 +124,7 @@ public class dfa {
             System.out.println("File not found");
             System.exit(0);
         }
-
+      
         //print all the date for the user
         
         //space to keep it tidy
@@ -157,7 +160,7 @@ public class dfa {
 
         //print the transition functions
         System.out.println("Transition Functions:");
-        for(int i = 0; i < transitonFunction.length; i++){
+        for(int i = 0; i < transitionCount; i++){
             System.out.println("Tran function " + i +": (" + transitonFunction[i].getInitialState() + "," + transitonFunction[i].getInputChar() + ")->"+
                  transitonFunction[i].transitionState);
         }
@@ -231,6 +234,7 @@ public class dfa {
     }
  
 }
+
 public class state {
      //Holds the initial state of the transition function
      char initialState;
@@ -309,5 +313,3 @@ public char getTransitionState() {
 
 
 }
-
-
